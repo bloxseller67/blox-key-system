@@ -1,0 +1,26 @@
+name: Gerar Key
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'  # roda a cada 12 horas
+  workflow_dispatch:  # permite rodar manual
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Gerar key aleatória
+        run: |
+          KEY="BLOX-$(openssl rand -hex 4 | tr 'a-f' 'A-F')-$(date +%d%m)"
+          echo $KEY > key.txt
+          echo "KEY=$KEY" >> $GITHUB_ENV
+      
+      - name: Commit
+        run: |
+          git config user.name "bot"
+          git config user.email "bot@github.com"
+          git add key.txt
+          git commit -m "Nova key: $KEY" || exit 0
+          git push
