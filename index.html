@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Blox Seller - Key</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  body{margin:0;background:#030305;color:#71717a;font-family:Inter,system-ui,sans-serif;height:100vh;display:flex;align-items:center;justify-content:center}
+  .box{width:100%;max-width:440px;background:#09090b;border:1px solid #18181b;border-radius:16px;padding:48px 36px;text-align:center;box-shadow:0 0 0 1px #000}
+  .check{width:56px;height:56px;margin:0 auto 20px;background:rgba(34,197,94,.1);border-radius:50%;display:grid;place-items:center}
+  .check svg{width:28px;height:28px;stroke:#22c55e;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  h1{color:#fafafa;font-size:24px;font-weight:600;margin:0 0 8px}
+  p{font-size:14px;line-height:1.5;margin:0 0 28px}
+  .key-wrap{position:relative;margin-bottom:12px}
+  #key{width:100%;background:#000;border:1px solid #27272a;border-radius:10px;padding:14px 16px;color:#e4e4e7;font-family:ui-monospace,monospace;font-size:14px;outline:none;resize:none;height:46px;overflow:hidden;white-space:nowrap}
+  .copy{width:100%;height:44px;background:#fff;color:#000;border:0;border-radius:10px;font-weight:500;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .1s}
+  .copy:active{transform:scale(.98)}
+  .footer{margin-top:32px;display:flex;gap:20px;justify-content:center;font-size:12px}
+  .footer a{color:#52525b;text-decoration:none}
+  .footer a:hover{color:#a1a1aa}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="check">
+    <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+  </div>
+  <h1>Successfully whitelisted!</h1>
+  <p>Please return to the service for access, you have <span id="time">11 hours and 59 minutes</span> left.</p>
+  
+  <div class="key-wrap">
+    <textarea id="key" readonly>Loading key...</textarea>
+  </div>
+  <button class="copy" onclick="copyKey()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    <span id="copy-text">Copy</span>
+  </button>
+
+  <div class="footer">
+    <a href="#">Report</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Privacy Policy</a>
+  </div>
+</div>
+
+<script>
+// 1. PEGA A KEY DO BOT (do arquivo key.txt)
+fetch('key.txt?' + Date.now())
+  .then(r => r.text())
+  .then(t => {
+    document.getElementById('key').value = t.trim();
+  });
+
+// 2. BOTÃO COPIAR
+function copyKey(){
+  const k = document.getElementById('key').value;
+  navigator.clipboard.writeText(k);
+  document.getElementById('copy-text').textContent = 'Copied!';
+  setTimeout(()=>document.getElementById('copy-text').textContent='Copy',2000);
+}
+
+// 3. TIMER de 12 horas
+let seconds = 12*60*60 - 60; // 11h59m
+setInterval(()=>{
+  seconds--;
+  const h = Math.floor(seconds/3600);
+  const m = Math.floor((seconds%3600)/60);
+  document.getElementById('time').textContent = `${h} hours and ${m} minutes left.`.replace(' left.','');
+  if(seconds<=0) location.reload();
+},60000);
+</script>
+</body>
+</html>
